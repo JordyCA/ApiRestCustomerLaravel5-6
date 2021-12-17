@@ -19,22 +19,32 @@ use App\Http\Controllers\Api\V1\postControllerCustomer;
 /*Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });*/
+Route::group(['prefix' => 'auth'], function () {
+    Route::post('login', 'AuthController@login');
+    Route::post('signup', 'AuthController@signup');
+  
+    Route::group(['middleware' => 'auth:api'], function() {
+        Route::get('logout', 'AuthController@logout');
+        Route::get('user', 'AuthController@user');
+        /** Add a new customer  */
+        Route::post('v1/addCustomer',function (Request $request) {
+            $createCustomer = new postControllerCustomer();
+            return $createCustomer->store($request);
+        });
 
+        /** Show a costumer*/
+        Route::post('v1/showCustomer',function (Request $request) {
+            $createCustomer = new postControllerCustomer();
+            return $createCustomer->showCustomer($request);
+        });
 
-/** Add a new customer  */
-Route::post('v1/addCustomer',function (Request $request) {
-    $createCustomer = new postControllerCustomer();
-    return $createCustomer->store($request);
+        /** Delete a customer */
+        Route::post('v1/deleteCustomer',function (Request $request) {
+            $createCustomer = new postControllerCustomer();
+            return $createCustomer->deleteCustomer($request);
+        });
+
+    });
 });
 
-/** Show a costumer*/
-Route::post('v1/showCustomer',function (Request $request) {
-    $createCustomer = new postControllerCustomer();
-    return $createCustomer->showCustomer($request);
-});
 
-/** Delete a customer */
-Route::post('v1/deleteCustomer',function (Request $request) {
-    $createCustomer = new postControllerCustomer();
-    return $createCustomer->deleteCustomer($request);
-});
